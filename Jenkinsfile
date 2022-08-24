@@ -55,7 +55,7 @@ pipeline {
                     def stop_container = "docker stop ${JOB_NAME}"
                     def delete_contName = "docker rm ${JOB_NAME}"
                     def delete_images = 'docker image prune -a --force'
-                    def image_run = "docker run -d --name ${JOB_NAME} -p 5000:5000 ${image}"
+                    def image_run = "docker run -d --name ${JOB_NAME} -p 8000:8000 ${image}"
                     println "${image_run}"
                     sshagent(['tomcat']) {
                         sh returnStatus: true, script: "ssh -o StrictHostKeyChecking=no ubuntu@54.213.153.153 ${stop_container}"
