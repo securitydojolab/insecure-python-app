@@ -49,4 +49,23 @@ pipeline {
         }
 
     }
+    stage('Deploy to Test Server') {
+            steps {
+                script {
+                    def stopcontainer = "docker stop ${JOB_NAME}"
+                    def delcontName = "docker rm ${JOB_NAME}"
+                    def delimages = 'docker image prune -a --force'
+                    def img_run = "docker run -d --name ${JOB_NAME} -p 8000:8000 ${image}"
+                    println "${img_run}"
+                    sshagent(['docker-test']) {
+                        sh returnStatus: true, script: "ssh -o StrictHostKeyChecking=no ubuntu@54.213.153.153 ${stopcontainer} "
+                        sh returnStatus: true, script: "ssh -o StrictHostKeyChecking=no ubuntu@54.213.153.153 ${delcontName}"
+                        sh returnStatus: true, script: "ssh -o StrictHostKeyChecking=no ubuntu@54.213.153.153 ${delimages}"
+
+                    // some block
+                        sh "ssh -o StrictHostKeyChecking=no ubuntu@54.213.153.153 ${img_run}"
+                    }
+                }
+            }
+        }
 }
