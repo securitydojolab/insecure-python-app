@@ -83,8 +83,6 @@ def get_password(email):
 
 
 
-
-
 @app.route('/')
 def hello():
     return "<h1>Hello From Insecure Password Manager</h1>"
