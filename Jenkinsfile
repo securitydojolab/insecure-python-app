@@ -3,7 +3,8 @@ pipeline {
     stages {
         stage ("Build Checkout") {
             steps {
-                git 'https://github.com/justmorpheus/insecure-python-app.git'
+                git branch: 'main',
+                    url: 'https://github.com/justmorpheus/insecure-python-app.git'
 
             }
         }
