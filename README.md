@@ -12,3 +12,7 @@
 * GET /get-password/<email> :  Get password & email via email address -> http GET http://localhost:8000/get-password/user@email.com
 * GET /redirect?url=domain : SSRF -> http GET http://localhost:8000/redirect?url=https://localhost
 
+# Docker commands
+
+* docker build --tag vulapp-docker .
+* docker run -d -p 8000:8000 vulapp-docker
