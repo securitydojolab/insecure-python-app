@@ -48,7 +48,27 @@ pipeline {
             }
       
         }
+     
+              stage('Deploy to Test Server') {
+            steps {
+                script {
+                    def stop_container = "docker stop ${JOB_NAME}"
+                    def delete_contName = "docker rm ${JOB_NAME}"
+                    def delete_images = 'docker image prune -a --force'
+                    def image_run = "docker run -d --name ${JOB_NAME} -p 5000:5000 ${image}"
+                    println "${image_run}"
+                    sshagent(['tomcat']) {
+                        sh returnStatus: true, script: "ssh -o StrictHostKeyChecking=no ubuntu@54.213.153.153 ${stop_container}"
+                        sh returnStatus: true, script: "ssh -o StrictHostKeyChecking=no ubuntu@54.213.153.153 ${delete_contName}"
+                        sh returnStatus: true, script: "ssh -o StrictHostKeyChecking=no ubuntu@54.213.153.153 ${delete_images}"
 
+                    // some block
+                        sh "ssh -o StrictHostKeyChecking=no ubuntu@54.213.153.153 ${image_run}"
+                    }
+                }
+            }
+        }
+            
 
     }
 }
