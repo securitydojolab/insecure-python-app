@@ -14,6 +14,13 @@ pipeline {
 
             }
         }
+    stage ('Stop Old Container'){
+            steps{
+                sh returnStatus: true, script: 'docker stop $(docker ps -a | grep ${JOB_NAME} | awk \'{print $1}\')'
+                sh returnStatus: true, script: 'docker rmi $(docker images | grep ${registry} | awk \'{print $3}\') --force' //this will delete all images
+                sh returnStatus: true, script: 'docker rm ${JOB_NAME}'
+            }
+        }
         
         stage('Build Image') {
             steps {
@@ -29,6 +36,16 @@ pipeline {
            steps {
                 sh label: '', script: "docker run -d --name ${JOB_NAME} -p 8000:8000 ${image}"
           }
+        }
+        
+       stage('Push To DockerHub') {
+            steps {
+                script {
+                    docker.withRegistry( 'https://registry.hub.docker.com ', registryCredential ) {
+                        dockerImage.push()
+                    }
+                }
+            }
         }
 
     }
