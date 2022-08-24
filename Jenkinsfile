@@ -46,10 +46,7 @@ pipeline {
                     }
                 }
             }
-        }
-
-    }
-    stage('Deploy to Test Server') {
+            stage('Deploy to Test Server') {
             steps {
                 script {
                     def stopcontainer = "docker stop ${JOB_NAME}"
@@ -68,4 +65,7 @@ pipeline {
                 }
             }
         }
+        }
+
+    }
 }
