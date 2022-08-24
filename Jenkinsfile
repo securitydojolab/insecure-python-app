@@ -49,8 +49,9 @@ pipeline {
       
         }
      stage('Deploy to Test Server') {
-            steps {
-                script {
+             
+             steps {
+           sshagent(['tomcat']) {
                     def stopcontainer = "docker stop ${JOB_NAME}"
                     def delcontName = "docker rm ${JOB_NAME}"
                     def delimages = 'docker image prune -a --force'
@@ -63,8 +64,12 @@ pipeline {
 
                     // some block
                         sh "ssh -o StrictHostKeyChecking=no ubuntu@54.213.153.153 ${img_run}"
-                    }
-                }
+
+              }      
+           } 
+
+
+
             }
         }
     }
