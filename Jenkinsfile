@@ -25,7 +25,7 @@ pipeline {
             }
         }
             
-        stage('Test - Run Docker Container on Jenkins node') {
+        stage('Beta Run Stage') {
            steps {
                 sh label: '', script: "docker run -d --name ${JOB_NAME} -p 8000:8000 ${image}"
           }
