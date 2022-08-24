@@ -1,19 +1,9 @@
 pipeline {
-    agent  any
+    agent { docker { image 'python:3.10.1-alpine' } }
     stages {
-        stage ("Build Checkout") {
+        stage('build') {
             steps {
-                git 'https://github.com/justmorpheus/insecure-python-app.git'
-                
-            }
-        }
-        stage ("Build Image") {
-            steps {
-                script {
-                    img = registry + ":${env.BUILD_ID}"
-                    println ("${img}")
-                    dockerImage = docker.build("${img}")
-                }
+                sh 'python --version'
             }
         }
     }
