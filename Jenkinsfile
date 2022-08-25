@@ -51,7 +51,7 @@ pipeline {
         sh returnStatus: true, script: 'rm report/safety-result.json'
         sh returnStatus: true, script: 'docker rm -f $(docker ps -a |  grep safety |awk \'{print $1}\')'
         sh returnStatus: true, script: 'docker rmi $(docker images | grep safety | awk \'{print $3}\') --force'
-        sh 'docker run --rm -v $(pwd):/src justmorpheu5/safety check -r requirements.txt --json  > report/safety-result.json'
+        sh returnStatus: true, script:docker run --rm -v $(pwd):/src justmorpheu5/safety check -r requirements.txt --json  > report/safety-result.json'
         sh 'cat report/safety-result.json'
       }
     }
