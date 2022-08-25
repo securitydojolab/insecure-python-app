@@ -24,7 +24,9 @@ pipeline {
      
    stage ('Check GitSecrets') {
       steps {
-        sh 'rm trufflehog || true'
+        sh returnStatus: true, script: 'rm trufflehog.json'
+        sh returnStatus: true, script: 'docker rm -f $(docker ps -a |  grep trufflehog |awk \'{print $1}\')'
+        sh returnStatus: true, script: 'docker rmi $(docker images | grep trufflehog | awk \'{print $3}\') --force'
         sh 'docker run trufflesecurity/trufflehog github --repo https://github.com/justmorpheus/insecure-python-app  > trufflehog.json'
         sh 'cat trufflehog.json'
       }
