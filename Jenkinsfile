@@ -72,6 +72,7 @@ pipeline {
 
                     // some block
                         sh "ssh -o StrictHostKeyChecking=no ubuntu@35.89.66.74 ${image_run}"
+                        archiveArtifacts artifacts: '**/*'
                     }
                 }
             }
