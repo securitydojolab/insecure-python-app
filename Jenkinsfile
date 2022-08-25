@@ -28,10 +28,11 @@ pipeline {
       // Trufflehog Secrets Scanning
    stage ('Secret Scan') {
       steps {
+
+        sh returnStatus: true, script: 'docker run justmorpheu5/trufflehog https://github.com/justmorpheus/insecure-python-app --json > report/trufflehog.json'
         sh returnStatus: true, script: 'rm report/trufflehog.json'
         sh returnStatus: true, script: 'docker rm -f $(docker ps -a |  grep trufflehog |awk \'{print $1}\')'
         sh returnStatus: true, script: 'docker rmi $(docker images | grep trufflehog | awk \'{print $3}\') --force'
-        sh returnStatus: true, script: 'docker run justmorpheu5/trufflehog https://github.com/justmorpheus/insecure-python-app --json > report/trufflehog.json'
         sh 'cat report/trufflehog.json'
       }
     }
@@ -50,20 +51,22 @@ pipeline {
     // Source Composition Analysis Dependency Scanning Backened
    stage ('SCA Backend Scan') {
       steps {
+
+        sh returnStatus: true, script: 'docker run --rm -v $(pwd):/src justmorpheu5/safety check -r requirements.txt --json  > report/safety-report.json'
         sh returnStatus: true, script: 'rm report/safety-report.json'
         sh returnStatus: true, script: 'docker rm -f $(docker ps -a |  grep safety |awk \'{print $1}\')'
         sh returnStatus: true, script: 'docker rmi $(docker images | grep safety | awk \'{print $3}\') --force'
-        sh returnStatus: true, script: 'docker run --rm -v $(pwd):/src justmorpheu5/safety check -r requirements.txt --json  > report/safety-report.json'
         sh 'cat report/safety-report.json'
       }
     }
    // Static Application Security Testing
     stage ('SAST Scan') {
       steps {
+
+        sh returnStatus: true, script: 'docker run --rm -v $(pwd):/bandit justmorpheu5/bandit -r . -f json  > report/bandit-report.json'
         sh returnStatus: true, script: 'rm report/bandit-report.json'
         sh returnStatus: true, script: 'docker rm -f $(docker ps -a |  grep bandit |awk \'{print $1}\')'
         sh returnStatus: true, script: 'docker rmi $(docker images | grep bandit | awk \'{print $3}\') --force'
-        sh returnStatus: true, script: 'docker run --rm -v $(pwd):/bandit justmorpheu5/bandit -r . -f json  > report/bandit-report.json'
         sh 'cat report/bandit-report.json'
       }
     }
@@ -120,45 +123,47 @@ pipeline {
        // Dynamic Application Security Testing
     stage ('SAST Scan') {
       steps {
+
+        // Change the IP address of the production server
+        sh returnStatus: true, script: 'docker run --rm -v $(pwd):/tmp justmorpheu5/nikto -h http://35.89.66.74:8000/ -o /tmp/report/nikto-report.xml'
         sh returnStatus: true, script: 'rm report/bandit-nikto.json'
         sh returnStatus: true, script: 'docker rm -f $(docker ps -a |  grep nikto |awk \'{print $1}\')'
         sh returnStatus: true, script: 'docker rmi $(docker images | grep nikto | awk \'{print $3}\') --force'
-        // Change the IP address of the production server
-        sh returnStatus: true, script: 'docker run --rm -v $(pwd):/tmp justmorpheu5/nikto -h http://35.89.66.74:8000/ -o /tmp/report/nikto-report.xml'
         sh 'cat report/nikto-report.json'
       }
     }
        // SSL Scan
     stage ('SSL Scan') {
       steps {
+
+        // Change the google.com to production domain
+        sh returnStatus: true, script: 'docker run --rm -v $(pwd):/tmp justmorpheu5/sslyze www.google.com --json_out /tmp/report/sslyze-report.json'
         sh returnStatus: true, script: 'rm report/sslyze-report.json'
         sh returnStatus: true, script: 'docker rm -f $(docker ps -a |  grep sslyze |awk \'{print $1}\')'
         sh returnStatus: true, script: 'docker rmi $(docker images | grep sslyze | awk \'{print $3}\') --force'
-        // Change the google.com to production domain
-        sh returnStatus: true, script: 'docker run --rm -v $(pwd):/tmp justmorpheu5/sslyze www.google.com --json_out /tmp/report/sslyze-report.json'
         sh 'cat report/sslyze-report.json'
       }
     }
        // Nmap Network Scan
     stage ('Nmap Scan') {
       steps {
+
+        // Change the google.com to production domain
+        sh returnStatus: true, script: 'docker run --rm -v $(pwd):/tmp justmorpheu5/nmap 35.89.66.74 -oX /tmp/report/nmap-report.xml'
         sh returnStatus: true, script: 'rm report/nmap-report.xml'
         sh returnStatus: true, script: 'docker rm -f $(docker ps -a |  grep nmap |awk \'{print $1}\')'
         sh returnStatus: true, script: 'docker rmi $(docker images | grep nmap | awk \'{print $3}\') --force'
-        // Change the google.com to production domain
-        sh returnStatus: true, script: 'docker run --rm -v $(pwd):/tmp justmorpheu5/nmap 35.89.66.74 -oX /tmp/report/nmap-report.xml'
         sh 'cat report/nmap-report.xml'
       }
     }
 // OWASP ZAP Baseline Scan
     stage ('ZAP Baseline Scan') {
       steps {
-        sh returnStatus: true, script: 'rm report/zap-report.json'
+
+        // Change the google.com to production domain
+        sh returnStatus: true, script: 'docker run --user 0 -v $(pwd):/zap/wrk/:rw -t owasp/zap2docker-stable zap-baseline.py -t  http://35.89.66.74:8000/ -x report/baseline-report.xml'
         sh returnStatus: true, script: 'docker rm -f $(docker ps -a |  grep zap |awk \'{print $1}\')'
         sh returnStatus: true, script: 'docker rmi $(docker images | grep zap | awk \'{print $3}\') --force'
-        // Change the google.com to production domain
-        sh returnStatus: true, script: 'docker run --rm -v $(pwd):/zap/wrk:rw owasp/zap2docker-stable zap-baseline.py -t http://35.89.66.74:8000/ -J report/zap-report.json'
-        sh 'cat report/zap-report.json'
       }
     }
             
