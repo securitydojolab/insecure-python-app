@@ -19,16 +19,28 @@ pipeline {
                 sh returnStatus: true, script: 'docker stop $(docker ps -a | grep ${JOB_NAME} | awk \'{print $1}\')'
                 sh returnStatus: true, script: 'docker rmi $(docker images | grep ${registry} | awk \'{print $3}\') --force' //this will delete all images
                 sh returnStatus: true, script: 'docker rm ${JOB_NAME}'
+                sh returnStatus: true, script: 'mkdir report'
             }
         }
-     
-   stage ('Check GitSecrets') {
+   # Static Application Security Testing
+    stage ('SAST Scan') {
       steps {
-        sh returnStatus: true, script: 'rm trufflehog.json'
+        sh returnStatus: true, script: 'rm report/bandit-result.json'
+        sh returnStatus: true, script: 'docker rm -f $(docker ps -a |  grep bandit |awk \'{print $1}\')'
+        sh returnStatus: true, script: 'docker rmi $(docker images | grep bandit | awk \'{print $3}\') --force'
+        sh 'ddocker run --rm -v $(pwd):/bandit justmorpheu5/bandit -r . -f json  > report/bandit-result.json'
+        sh 'cat report/bandit-result.json'
+      }
+    }   
+            
+   # Trufflehog Secrets Scanning
+   stage ('Secret Scan') {
+      steps {
+        sh returnStatus: true, script: 'rm report/trufflehog.json'
         sh returnStatus: true, script: 'docker rm -f $(docker ps -a |  grep trufflehog |awk \'{print $1}\')'
         sh returnStatus: true, script: 'docker rmi $(docker images | grep trufflehog | awk \'{print $3}\') --force'
-        sh 'docker run trufflesecurity/trufflehog github --repo https://github.com/justmorpheus/insecure-python-app  > trufflehog.json'
-        sh 'cat trufflehog.json'
+        sh 'docker run justmorpheu5/trufflehog github --repo https://github.com/justmorpheus/insecure-python-app --json > report/trufflehog.json'
+        sh 'cat report/trufflehog.json'
       }
     }
         
@@ -42,13 +54,13 @@ pipeline {
             }
         }
             
-        stage('Beta Run Stage') {
+        stage('Beta Test Stage') {
            steps {
                 sh label: '', script: "docker run -d --name ${JOB_NAME} -p 8000:8000 ${image}"
           }
         }
         
-       stage('Push To DockerHub') {
+       stage('Update Dockerhub') {
             steps {
                 script {
                     docker.withRegistry( 'https://registry.hub.docker.com ', registryCredential ) {
@@ -59,7 +71,7 @@ pipeline {
       
         }
      
-              stage('Deploy to Test Server') {
+              stage('Deploy to Prod') {
             steps {
                 script {
                     def stop_container = "docker stop ${JOB_NAME}"
