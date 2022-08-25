@@ -58,12 +58,12 @@ pipeline {
                     def image_run = "docker run -d --name ${JOB_NAME} -p 8000:8000 ${image}"
                     println "${image_run}"
                     sshagent(['tomcat']) {
-                        sh returnStatus: true, script: "ssh -o StrictHostKeyChecking=no ubuntu@54.213.153.153 ${stop_container}"
-                        sh returnStatus: true, script: "ssh -o StrictHostKeyChecking=no ubuntu@54.213.153.153 ${delete_contName}"
-                        sh returnStatus: true, script: "ssh -o StrictHostKeyChecking=no ubuntu@54.213.153.153 ${delete_images}"
+                        sh returnStatus: true, script: "ssh -o StrictHostKeyChecking=no ubuntu@35.89.66.74 ${stop_container}"
+                        sh returnStatus: true, script: "ssh -o StrictHostKeyChecking=no ubuntu@35.89.66.74 ${delete_contName}"
+                        sh returnStatus: true, script: "ssh -o StrictHostKeyChecking=no ubuntu@35.89.66.74 ${delete_images}"
 
                     // some block
-                        sh "ssh -o StrictHostKeyChecking=no ubuntu@54.213.153.153 ${image_run}"
+                        sh "ssh -o StrictHostKeyChecking=no ubuntu@35.89.66.74 ${image_run}"
                     }
                 }
             }
