@@ -23,7 +23,7 @@ pipeline {
             }
         }
     
-      # Trufflehog Secrets Scanning
+      // Trufflehog Secrets Scanning
    stage ('Secret Scan') {
       steps {
         sh returnStatus: true, script: 'rm report/trufflehog.json'
@@ -34,7 +34,7 @@ pipeline {
       }
     }
             
-   # Static Application Security Testing
+   // Static Application Security Testing
     stage ('SAST Scan') {
       steps {
         sh returnStatus: true, script: 'rm report/bandit-result.json'
@@ -45,7 +45,7 @@ pipeline {
       }
     }
 
-   # Source Composition Analysis Dependency Scanning Frontend
+   // Source Composition Analysis Dependency Scanning Frontend
    stage ('SCA Frontend Scan') {
       steps {
         sh returnStatus: true, script: 'rm -f odc-reports/dependency-check-*'
@@ -56,7 +56,7 @@ pipeline {
        
       }
     }   
-    # Source Composition Analysis Dependency Scanning Backened
+    // Source Composition Analysis Dependency Scanning Backened
    stage ('SCA Backend Scan') {
       steps {
         sh returnStatus: true, script: 'rm report/safety-result.json'
