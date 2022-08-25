@@ -21,6 +21,14 @@ pipeline {
                 sh returnStatus: true, script: 'docker rm ${JOB_NAME}'
             }
         }
+     
+   stage ('Check GitSecrets') {
+      steps {
+        sh 'rm trufflehog || true'
+        sh 'docker run trufflesecurity/trufflehog --repo_path .  > trufflehog.json'
+        sh 'cat trufflehog'
+      }
+    }
         
         stage('Build Image') {
             steps {
