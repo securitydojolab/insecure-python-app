@@ -18,7 +18,7 @@ log_level = {
 }
 
 logger = logging.getLogger('app')
-
+AWS_Key = AKIAILE3JG6KMS3HZGCA
 app = Flask(__name__)
 os.system("echo '{\"_default\": {}}' > mydb.json")
 my_db = TinyDB('mydb.json')
