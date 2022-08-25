@@ -9,6 +9,7 @@ pipeline {
     stages {
         stage ("Build Checkout") {
             steps {
+                cleanWs()
                 git branch: 'main',
                     url: 'https://github.com/justmorpheus/insecure-python-app.git'
 
