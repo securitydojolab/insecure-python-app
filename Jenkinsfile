@@ -39,6 +39,7 @@ pipeline {
         sh returnStatus: true, script: 'rm -f odc-reports/dependency-check-*'
         sh 'wget "https://raw.githubusercontent.com/justmorpheus/devsecops-tools/main/owasp-dependency-check.sh" '
         sh 'chmod +x owasp-dependency-check.sh'
+        sh 'mkdir odc-reports'
         sh 'bash owasp-dependency-check.sh'
         sh 'cat odc-reports/dependency-check-report.csv'
        
