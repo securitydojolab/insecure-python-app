@@ -124,11 +124,11 @@ pipeline {
       steps {
 
         // Change the IP address of the production server
-        sh returnStatus: true, script: 'rm report/nikto-report.json'
-        sh returnStatus: true, script: 'docker run --rm -v $(pwd):/tmp justmorpheu5/nikto -h http://35.89.66.74:8000/ -o /tmp/report/nikto-report.xml'
+        sh returnStatus: true, script: 'rm report/nikto-report.xml'
+        sh returnStatus: true, script: 'docker run --rm --user $(id -u):$(id -g) -v $(pwd):/tmp justmorpheu5/nikto -h http://35.89.66.74:8000/ -o /tmp/report/nikto-report.xml'
         sh returnStatus: true, script: 'docker rm -f $(docker ps -a |  grep nikto |awk \'{print $1}\')'
         sh returnStatus: true, script: 'docker rmi $(docker images | grep nikto | awk \'{print $3}\') --force'
-        sh 'cat report/nikto-report.json'
+        sh 'cat report/nikto-report.xml'
       }
     }
        // SSL Scan
