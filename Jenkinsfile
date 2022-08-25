@@ -60,7 +60,7 @@ pipeline {
         sh returnStatus: true, script: 'rm report/bandit-result.json'
         sh returnStatus: true, script: 'docker rm -f $(docker ps -a |  grep bandit |awk \'{print $1}\')'
         sh returnStatus: true, script: 'docker rmi $(docker images | grep bandit | awk \'{print $3}\') --force'
-        sh 'docker run --rm -v $(pwd):/bandit justmorpheu5/bandit -r . -f json  > report/bandit-result.json'
+        sh returnStatus: true, script: 'docker run --rm -v $(pwd):/bandit justmorpheu5/bandit -r . -f json  > report/bandit-result.json'
         sh 'cat report/bandit-result.json'
       }
     }
