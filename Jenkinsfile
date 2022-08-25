@@ -128,8 +128,8 @@ pipeline {
         sh 'cat report/nikto-report.json'
       }
     }
-       // SSL Scam
-    stage ('SAST Scan') {
+       // SSL Scan
+    stage ('SSL Scan') {
       steps {
         sh returnStatus: true, script: 'rm report/sslyze-report.json'
         sh returnStatus: true, script: 'docker rm -f $(docker ps -a |  grep sslyze |awk \'{print $1}\')'
@@ -139,5 +139,29 @@ pipeline {
         sh 'cat report/sslyze-report.json'
       }
     }
+       // Nmap Network Scan
+    stage ('Nmap Scan') {
+      steps {
+        sh returnStatus: true, script: 'rm report/nmap-report.xml'
+        sh returnStatus: true, script: 'docker rm -f $(docker ps -a |  grep nmap |awk \'{print $1}\')'
+        sh returnStatus: true, script: 'docker rmi $(docker images | grep nmap | awk \'{print $3}\') --force'
+        // Change the google.com to production domain
+        sh returnStatus: true, script: 'docker run --rm -v $(pwd):/tmp justmorpheu5/nmap 35.89.66.74 -oX /tmp/report/nmap-report.xml'
+        sh 'cat report/nmap-report.xml'
+      }
+    }
+// OWASP ZAP Baseline Scan
+    stage ('ZAP Baseline Scan') {
+      steps {
+        sh returnStatus: true, script: 'rm report/zap-report.json'
+        sh returnStatus: true, script: 'docker rm -f $(docker ps -a |  grep zap |awk \'{print $1}\')'
+        sh returnStatus: true, script: 'docker rmi $(docker images | grep zap | awk \'{print $3}\') --force'
+        // Change the google.com to production domain
+        sh returnStatus: true, script: 'docker run --rm -v $(pwd):/zap/wrk:rw owasp/zap2docker-stable zap-baseline.py -t http://35.89.66.74:8000/ -J report/zap-report.json'
+        sh 'cat report/zap-report.json'
+      }
+    }
+            
+            
     }
 }
