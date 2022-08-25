@@ -29,7 +29,7 @@ pipeline {
         sh returnStatus: true, script: 'rm report/trufflehog.json'
         sh returnStatus: true, script: 'docker rm -f $(docker ps -a |  grep trufflehog |awk \'{print $1}\')'
         sh returnStatus: true, script: 'docker rmi $(docker images | grep trufflehog | awk \'{print $3}\') --force'
-        sh 'docker run justmorpheu5/trufflehog github --repo https://github.com/justmorpheus/insecure-python-app --json > report/trufflehog.json'
+        sh 'docker run justmorpheu5/trufflehog https://github.com/justmorpheus/insecure-python-app --json > report/trufflehog.json'
         sh 'cat report/trufflehog.json'
       }
     }
