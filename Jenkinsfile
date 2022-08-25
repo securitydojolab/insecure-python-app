@@ -98,7 +98,7 @@ pipeline {
       
         }
      
-              stage('Deploy to Prod') {
+       stage('Deploy to Prod') {
             steps {
                 script {
                     def stop_container = "docker stop ${JOB_NAME}"
@@ -121,7 +121,7 @@ pipeline {
         }
      
        // Dynamic Application Security Testing
-    stage ('SAST Scan') {
+    stage ('DAST Scan') {
       steps {
 
         // Change the IP address of the production server
