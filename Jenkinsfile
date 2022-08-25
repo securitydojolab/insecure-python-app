@@ -26,7 +26,7 @@ pipeline {
       steps {
         sh 'rm trufflehog || true'
         sh 'docker run trufflesecurity/trufflehog github --repo https://github.com/justmorpheus/insecure-python-app  > trufflehog.json'
-        sh 'cat trufflehog'
+        sh 'cat trufflehog.json'
       }
     }
         
