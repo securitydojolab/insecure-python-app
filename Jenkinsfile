@@ -60,7 +60,7 @@ pipeline {
    // Static Application Security Testing
     stage ('SAST Scan') {
       steps {
-        sh returnStatus: true, script: 'rm report/bandit-rreport.json'
+        sh returnStatus: true, script: 'rm report/bandit-report.json'
         sh returnStatus: true, script: 'docker rm -f $(docker ps -a |  grep bandit |awk \'{print $1}\')'
         sh returnStatus: true, script: 'docker rmi $(docker images | grep bandit | awk \'{print $3}\') --force'
         sh returnStatus: true, script: 'docker run --rm -v $(pwd):/bandit justmorpheu5/bandit -r . -f json  > report/bandit-report.json'
@@ -104,18 +104,40 @@ pipeline {
                     def image_run = "docker run -d --name ${JOB_NAME} -p 8000:8000 ${image}"
                     println "${image_run}"
                     sshagent(['tomcat']) {
+                        // Change the IP address of the production server
                         sh returnStatus: true, script: "ssh -o StrictHostKeyChecking=no ubuntu@35.89.66.74 ${stop_container}"
                         sh returnStatus: true, script: "ssh -o StrictHostKeyChecking=no ubuntu@35.89.66.74 ${delete_contName}"
                         sh returnStatus: true, script: "ssh -o StrictHostKeyChecking=no ubuntu@35.89.66.74 ${delete_images}"
 
-                    // some block
+                    // Change the IP address of the production server
                         sh "ssh -o StrictHostKeyChecking=no ubuntu@35.89.66.74 ${image_run}"
                         archiveArtifacts artifacts: '**/*'
                     }
                 }
             }
         }
-            
-
+     
+       // Dynamic Application Security Testing
+    stage ('SAST Scan') {
+      steps {
+        sh returnStatus: true, script: 'rm report/bandit-nikto.json'
+        sh returnStatus: true, script: 'docker rm -f $(docker ps -a |  grep nikto |awk \'{print $1}\')'
+        sh returnStatus: true, script: 'docker rmi $(docker images | grep nikto | awk \'{print $3}\') --force'
+        // Change the IP address of the production server
+        sh returnStatus: true, script: 'docker run --rm -v $(pwd):/tmp justmorpheu5/nikto -h http://35.89.66.74:8000/ -o /tmp/report/nikto-report.xml'
+        sh 'cat report/nikto-report.json'
+      }
+    }
+       // SSL Scam
+    stage ('SAST Scan') {
+      steps {
+        sh returnStatus: true, script: 'rm report/sslyze-report.json'
+        sh returnStatus: true, script: 'docker rm -f $(docker ps -a |  grep sslyze |awk \'{print $1}\')'
+        sh returnStatus: true, script: 'docker rmi $(docker images | grep sslyze | awk \'{print $3}\') --force'
+        // Change the google.com to production domain
+        sh returnStatus: true, script: 'docker run --rm -v $(pwd):/tmp justmorpheu5/sslyze www.google.com --json_out /tmp/report/sslyze-report.json'
+        sh 'cat report/sslyze-report.json'
+      }
+    }
     }
 }
