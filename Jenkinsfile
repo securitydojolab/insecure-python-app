@@ -45,6 +45,8 @@ pipeline {
         sh 'mkdir odc-reports'
         sh 'bash owasp-dependency-check.sh'
         sh 'cat odc-reports/dependency-check-report.csv'
+        sh returnStatus: true, script: 'docker rm -f $(docker ps -a |  grep dependency-check |awk \'{print $1}\')'
+        sh returnStatus: true, script: 'docker rmi $(docker images | grep dependency-check | awk \'{print $3}\') --force'
        
       }
     }   
