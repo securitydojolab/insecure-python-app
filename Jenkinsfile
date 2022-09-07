@@ -184,7 +184,7 @@ pipeline {
         sh returnStatus: true, script: 'python3 upload-results.py --host defectdojo.securitydojo.co.in:8080 --api_key 40b15c1e94c8721892e68ef7b368366a9712bed7 --engagement_id 9 --product_id 1 --lead_id 1 --environment "Production" --result_file report/nikto-report.xml --scanner "Nikto Scan"'
         //Nmap Scan Report
         sh returnStatus: true, script: 'python3 upload-results.py --host defectdojo.securitydojo.co.in:8080 --api_key 40b15c1e94c8721892e68ef7b368366a9712bed7 --engagement_id 9 --product_id 1 --lead_id 1 --environment "Production" --result_file report/nmap-report.xml --scanner "Nmap Scan"'
-        //Dependency Check Scan
+        //Dependency Check Scan Report
         sh returnStatus: true, script: 'python3 upload-results.py --host defectdojo.securitydojo.co.in:8080 --api_key 40b15c1e94c8721892e68ef7b368366a9712bed7 --engagement_id 9 --product_id 1 --lead_id 1 --environment "Production" --result_file dependency-check-report.xml --scanner "Dependency Check Scan"'
         
       }
