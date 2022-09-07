@@ -127,7 +127,7 @@ pipeline {
 
         // Change the IP address of the production server
         sh returnStatus: true, script: 'rm report/nikto-report.xml'
-        sh returnStatus: true, script: 'docker run --rm -u $(id -u):$(id -u) -v $(pwd):/tmp justmorpheu5/nikto -h http://devsecops.securitydojo.co.in:8000/ -o /tmp/report/nikto-report.xml'
+        sh returnStatus: true, script: 'docker run --rm -u $(id -u):$(id -g) -v $(pwd):/tmp justmorpheu5/nikto -h http://devsecops.securitydojo.co.in:8000/ -o /tmp/report/nikto-report.xml'
         sh returnStatus: true, script: 'docker rm -f $(docker ps -a |  grep nikto |awk \'{print $1}\')'
         sh returnStatus: true, script: 'docker rmi $(docker images | grep nikto | awk \'{print $3}\') --force'
         sh 'cat report/nikto-report.xml'
@@ -139,7 +139,7 @@ pipeline {
 
         // Change the google.com to production domain
         sh returnStatus: true, script: 'rm report/sslyze-report.json'
-        sh returnStatus: true, script: 'docker run --rm -u $(id -u):$(id -u) -v $(pwd):/tmp justmorpheu5/sslyze www.google.com --json_out /tmp/report/sslyze-report.json'
+        sh returnStatus: true, script: 'docker run --rm -u $(id -u):$(id -g) -v $(pwd):/tmp justmorpheu5/sslyze www.google.com --json_out /tmp/report/sslyze-report.json'
         sh returnStatus: true, script: 'docker rm -f $(docker ps -a |  grep sslyze |awk \'{print $1}\')'
         sh returnStatus: true, script: 'docker rmi $(docker images | grep sslyze | awk \'{print $3}\') --force'
         sh 'cat report/sslyze-report.json'
@@ -151,7 +151,7 @@ pipeline {
 
         // Change the IP address of the production server
         sh returnStatus: true, script: 'rm report/nmap-report.xml'
-        sh returnStatus: true, script: 'docker run --rm -u $(id -u):$(id -u) -v $(pwd):/tmp justmorpheu5/nmap devsecops.securitydojo.co.in -oX /tmp/report/nmap-report.xml'
+        sh returnStatus: true, script: 'docker run --rm -u $(id -u):$(id -g) -v $(pwd):/tmp justmorpheu5/nmap devsecops.securitydojo.co.in -oX /tmp/report/nmap-report.xml'
         sh returnStatus: true, script: 'docker rm -f $(docker ps -a |  grep nmap |awk \'{print $1}\')'
         sh returnStatus: true, script: 'docker rmi $(docker images | grep nmap | awk \'{print $3}\') --force'
         sh 'cat report/nmap-report.xml'
@@ -164,6 +164,15 @@ pipeline {
         // Change the IP address of the production server
         sh returnStatus: true, script: 'docker run --user 0 -v $(pwd):/zap/wrk/:rw -t owasp/zap2docker-stable zap-baseline.py -t  http://devsecops.securitydojo.co.in:8000/ -x baseline-report.xml'
         sh returnStatus: true, script: 'docker rm -f $(docker ps -a |  grep zap |awk \'{print $1}\')'
+        sh returnStatus: true, script: 'docker rmi $(docker images | grep zap | awk \'{print $3}\') --force'
+      }
+    }
+ // Vulnerability Management
+    stage ('Vulnerability Management') {
+      steps {
+
+        sh returnStatus: true, script: 'wget https://raw.githubusercontent.com/justmorpheus/devsecops-tools/main/upload-results.py'
+        sh returnStatus: true, script: 'chmod +x upload-results.py'
         sh returnStatus: true, script: 'docker rmi $(docker images | grep zap | awk \'{print $3}\') --force'
       }
     }
