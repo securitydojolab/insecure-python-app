@@ -21,6 +21,7 @@ pipeline {
                 sh returnStatus: true, script: 'docker stop $(docker ps -a | grep ${JOB_NAME} | awk \'{print $1}\')'
                 sh returnStatus: true, script: 'docker rmi $(docker images | grep ${registry} | awk \'{print $3}\') --force' //this will delete all images
                 sh returnStatus: true, script: 'docker rm ${JOB_NAME}'
+                sh returnStatus: true, script: 'docker rm -f $(docker ps -a |  grep vuln-python |awk \'{print $1}\')'
                 sh returnStatus: true, script: 'mkdir report'
             }
         }
@@ -162,7 +163,7 @@ pipeline {
       steps {
 
         // Change the IP address of the production server
-        sh returnStatus: true, script: 'docker run --user 0 --rm -v $(pwd):/zap/wrk:rw owasp/zap2docker-stable:2.11.1 zap-baseline.py -t http://devsecops.securitydojo.co.in:8000/ -J report/zap-output.json'
+        sh returnStatus: true, script: 'docker run --user 0 --rm -v $(pwd):/zap/wrk:rw owasp/zap2docker-stable:2.11.1 zap-baseline.py -t http://devsecops.securitydojo.co.in:8000/ -J zap-output.json'
         sh returnStatus: true, script: 'docker rm -f $(docker ps -a |  grep zap |awk \'{print $1}\')'
         sh returnStatus: true, script: 'docker rmi $(docker images | grep zap | awk \'{print $3}\') --force'
       }
@@ -179,7 +180,7 @@ pipeline {
         sh returnStatus: true, script: 'python3 upload-results.py --host defectdojo.securitydojo.co.in:8080 --api_key 40b15c1e94c8721892e68ef7b368366a9712bed7 --engagement_id 9 --product_id 1 --lead_id 1 --environment "Production" --result_file report/trufflehog.json --scanner "Trufflehog Scan"'
         //Safety not supported By DefectDojo
         //SSLyze Scan Report
-        sh returnStatus: true, script: 'python3 upload-results.py --host defectdojo.securitydojo.co.in:8080 --api_key 40b15c1e94c8721892e68ef7b368366a9712bed7 --engagement_id 9 --product_id 1 --lead_id 1 --environment "Production" --result_file report/sslyze-report.json --scanner "SSslyze Scan"'
+        sh returnStatus: true, script: 'python3 upload-results.py --host defectdojo.securitydojo.co.in:8080 --api_key 40b15c1e94c8721892e68ef7b368366a9712bed7 --engagement_id 9 --product_id 1 --lead_id 1 --environment "Production" --result_file report/sslyze-report.json --scanner "Sslyze Scan"'
         //Nikto Scan Report
         sh returnStatus: true, script: 'python3 upload-results.py --host defectdojo.securitydojo.co.in:8080 --api_key 40b15c1e94c8721892e68ef7b368366a9712bed7 --engagement_id 9 --product_id 1 --lead_id 1 --environment "Production" --result_file report/nikto-report.xml --scanner "Nikto Scan"'
         //Nmap Scan Report
