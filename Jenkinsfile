@@ -175,7 +175,16 @@ pipeline {
         sh returnStatus: true, script: 'chmod +x upload-results.py'
         //Bandit Scan Report
         sh returnStatus: true, script: 'python3 upload-results.py --host defectdojo.securitydojo.co.in:8080 --api_key 40b15c1e94c8721892e68ef7b368366a9712bed7 --engagement_id 8 --product_id 1 --lead_id 1 --environment "Production" --result_file report/bandit-report.json --scanner "Bandit Scan"'
+        //Trufflehog Scan Report
         sh returnStatus: true, script: 'python3 upload-results.py --host defectdojo.securitydojo.co.in:8080 --api_key 40b15c1e94c8721892e68ef7b368366a9712bed7 --engagement_id 8 --product_id 1 --lead_id 1 --environment "Production" --result_file report/trufflehog.json --scanner "Trufflehog Scan"'
+        //Safety not supported By DefectDojo
+        //SSLyze Scan Report
+        sh returnStatus: true, script: 'python3 upload-results.py --host defectdojo.securitydojo.co.in:8080 --api_key 40b15c1e94c8721892e68ef7b368366a9712bed7 --engagement_id 8 --product_id 1 --lead_id 1 --environment "Production" --result_file report/sslyze-report.json --scanner "SSslyze Scan"'
+        //Nikto Scan Report
+        sh returnStatus: true, script: 'python3 upload-results.py --host defectdojo.securitydojo.co.in:8080 --api_key 40b15c1e94c8721892e68ef7b368366a9712bed7 --engagement_id 8 --product_id 1 --lead_id 1 --environment "Production" --result_file report/nikto-report.xml --scanner "Nikto Scan"'
+        //Nmap Scan Report
+        sh returnStatus: true, script: 'python3 upload-results.py --host defectdojo.securitydojo.co.in:8080 --api_key 40b15c1e94c8721892e68ef7b368366a9712bed7 --engagement_id 8 --product_id 1 --lead_id 1 --environment "Production" --result_file report/nmap-report.xml --scanner "Nmap Scan"'
+        
       }
     }
             
