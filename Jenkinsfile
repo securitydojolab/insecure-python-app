@@ -110,8 +110,8 @@ pipeline {
                     sshagent(['tomcat']) {
                         // Change the IP address of the production server
                         sh returnStatus: true, script: "ssh -o StrictHostKeyChecking=no ubuntu@devsecops.securitydojo.co.in ${stop_container}"
-                        sh returnStatus: true, script: "ssh -o StrictHostKeyChecking=no ubuntu@devsecops.securitydojo.co.in${delete_contName}"
-                        sh returnStatus: true, script: "ssh -o StrictHostKeyChecking=no ubuntu@devsecops.securitydojo.co.in${delete_images}"
+                        sh returnStatus: true, script: "ssh -o StrictHostKeyChecking=no ubuntu@devsecops.securitydojo.co.in ${delete_contName}"
+                        sh returnStatus: true, script: "ssh -o StrictHostKeyChecking=no ubuntu@devsecops.securitydojo.co.in ${delete_images}"
 
                     // Change the IP address of the production server
                         sh "ssh -o StrictHostKeyChecking=no ubuntu@devsecops.securitydojo.co.in ${image_run}"
