@@ -173,7 +173,8 @@ pipeline {
 
         sh returnStatus: true, script: 'wget https://raw.githubusercontent.com/justmorpheus/devsecops-tools/main/upload-results.py'
         sh returnStatus: true, script: 'chmod +x upload-results.py'
-        sh returnStatus: true, script: 'docker rmi $(docker images | grep zap | awk \'{print $3}\') --force'
+        //Bandit Scan Report
+        sh returnStatus: true, script: 'python3 upload-results.py --host defectdojo.securitydojo.co.in:8080 --api_key 40b15c1e94c8721892e68ef7b368366a9712bed7 --engagement_id 8 --product_id 1 --lead_id 1 --environment "Production" --result_file report/bandit-report.json --scanner "Bandit Scan"'
       }
     }
             
