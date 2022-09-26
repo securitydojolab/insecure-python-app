@@ -86,7 +86,7 @@ def get_password(email):
 
 @app.route('/')
 def hello():
-    return "<body style="background-color:LightGray;"><center><h3 style="background-color:DodgerBlue;">Hello From Insecure Password Manager</h3></center>"
+    return "<body style='background-color:LightGray;'><center><h3 style='background-color:DodgerBlue;'>Hello From Insecure Password Manager</h3></center>"
 
 @app.route('/redirect')
 def web():
