@@ -142,7 +142,7 @@ pipeline {
 
         // Change the google.com to production domain
         sh returnStatus: true, script: 'rm report/sslyze-report.json'
-        sh returnStatus: true, script: 'docker run --rm -u $(id -u):$(id -g) -v $(pwd):/tmp justmorpheu5/sslyze www.google.com --json_out /tmp/report/sslyze-report.json'
+        sh returnStatus: true, script: 'docker run --rm -u $(id -u):$(id -g) -v $(pwd):/tmp justmorpheu5/sslyze devsecops.securitydojo.co.in --json_out /tmp/report/sslyze-report.json'
         sh returnStatus: true, script: 'docker rm -f $(docker ps -a |  grep sslyze |awk \'{print $1}\')'
         sh returnStatus: true, script: 'docker rmi $(docker images | grep sslyze | awk \'{print $3}\') --force'
         sh 'cat report/sslyze-report.json'
