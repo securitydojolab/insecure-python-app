@@ -41,6 +41,7 @@ pipeline {
    stage ('SCA Frontend Scan') {
       steps {
         sh returnStatus: true, script: 'rm -f odc-reports/dependency-check-*'
+        sh returnStatus: true, script: 'rm /usr/share/dependency-check/data/odc.update.lock'
         sh 'wget "https://raw.githubusercontent.com/justmorpheus/devsecops-tools/main/owasp-dependency-check.sh" '
         sh 'chmod +x owasp-dependency-check.sh'
         sh 'mkdir odc-reports'
