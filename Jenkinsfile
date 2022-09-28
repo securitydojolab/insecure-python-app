@@ -11,8 +11,8 @@ pipeline {
             steps {
                 // Clean workspace before build
                 cleanWs()
-                //git branch: 'main',
-                    //url: 'https://github.com/justmorpheus/insecure-python-app.git'
+                git branch: 'main',
+                    url: 'https://github.com/justmorpheus/devsecops-infrastructure'
 
             }
         }
