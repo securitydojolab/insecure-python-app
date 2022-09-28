@@ -178,20 +178,20 @@ pipeline {
         sh returnStatus: true, script: 'wget https://raw.githubusercontent.com/justmorpheus/devsecops-tools/main/upload-results.py'
         sh returnStatus: true, script: 'chmod +x upload-results.py'
         //Bandit Scan Report
-        sh returnStatus: true, script: 'python3 upload-results.py --host defectdojo.securitydojo.co.in:8080 --api_key 40b15c1e94c8721892e68ef7b368366a9712bed7 --engagement_id 9 --product_id 1 --lead_id 1 --environment "Production" --result_file report/bandit-report.json --scanner "Bandit Scan"'
+        sh returnStatus: true, script: 'python3 upload-results.py --host 35.88.135.179:8080 --api_key 1e5d07659ca2a02cb2e43b8fd5fee6c859c0b328 --engagement_id 1 --product_id 1 --lead_id 1 --environment "Production" --result_file report/bandit-report.json --scanner "Bandit Scan"'
         //Trufflehog Scan Report
-        sh returnStatus: true, script: 'python3 upload-results.py --host defectdojo.securitydojo.co.in:8080 --api_key 40b15c1e94c8721892e68ef7b368366a9712bed7 --engagement_id 9 --product_id 1 --lead_id 1 --environment "Production" --result_file report/trufflehog.json --scanner "Trufflehog Scan"'
+        sh returnStatus: true, script: 'python3 upload-results.py --host 35.88.135.179:8080 --api_key 1e5d07659ca2a02cb2e43b8fd5fee6c859c0b328 --engagement_id 1 --product_id 1 --lead_id 1 --environment "Production" --result_file report/trufflehog.json --scanner "Trufflehog Scan"'
         //Safety not supported By DefectDojo
         //SSLyze Scan Report
-        sh returnStatus: true, script: 'python3 upload-results.py --host defectdojo.securitydojo.co.in:8080 --api_key 40b15c1e94c8721892e68ef7b368366a9712bed7 --engagement_id 9 --product_id 1 --lead_id 1 --environment "Production" --result_file report/sslyze-report.json --scanner "Sslyze Scan"'
+        sh returnStatus: true, script: 'python3 upload-results.py --host 35.88.135.179:8080 --api_key 1e5d07659ca2a02cb2e43b8fd5fee6c859c0b328 --engagement_id 1 --product_id 1 --lead_id 1 --environment "Production" --result_file report/sslyze-report.json --scanner "Sslyze Scan"'
         //Nikto Scan Report
-        sh returnStatus: true, script: 'python3 upload-results.py --host defectdojo.securitydojo.co.in:8080 --api_key 40b15c1e94c8721892e68ef7b368366a9712bed7 --engagement_id 9 --product_id 1 --lead_id 1 --environment "Production" --result_file report/nikto-report.xml --scanner "Nikto Scan"'
+        sh returnStatus: true, script: 'python3 upload-results.py --host 35.88.135.179:8080 --api_key 1e5d07659ca2a02cb2e43b8fd5fee6c859c0b328 --engagement_id 1 --product_id 1 --lead_id 1 --environment "Production" --result_file report/nikto-report.xml --scanner "Nikto Scan"'
         //Nmap Scan Report
-        sh returnStatus: true, script: 'python3 upload-results.py --host defectdojo.securitydojo.co.in:8080 --api_key 40b15c1e94c8721892e68ef7b368366a9712bed7 --engagement_id 9 --product_id 1 --lead_id 1 --environment "Production" --result_file report/nmap-report.xml --scanner "Nmap Scan"'
+        sh returnStatus: true, script: 'python3 upload-results.py --host 35.88.135.179:8080 --api_key 1e5d07659ca2a02cb2e43b8fd5fee6c859c0b328 --engagement_id 1 --product_id 1 --lead_id 1 --environment "Production" --result_file report/nmap-report.xml --scanner "Nmap Scan"'
         //Dependency Check Scan Report
-        sh returnStatus: true, script: 'python3 upload-results.py --host defectdojo.securitydojo.co.in:8080 --api_key 40b15c1e94c8721892e68ef7b368366a9712bed7 --engagement_id 9 --product_id 1 --lead_id 1 --environment "Production" --result_file odc-reports/dependency-check-report.xml --scanner "Dependency Check Scan"'
+        sh returnStatus: true, script: 'python3 upload-results.py --host 35.88.135.179:8080 --api_key 1e5d07659ca2a02cb2e43b8fd5fee6c859c0b328 --engagement_id 1 --product_id 1 --lead_id 1 --environment "Production" --result_file odc-reports/dependency-check-report.xml --scanner "Dependency Check Scan"'
         // OWASP Zap baseline Scan
-        sh returnStatus: true, script: 'python3 upload-results.py --host defectdojo.securitydojo.co.in:8080 --api_key 40b15c1e94c8721892e68ef7b368366a9712bed7 --engagement_id 9 --product_id 1 --lead_id 1 --environment "Production" --result_file zap-report.xml --scanner "ZAP Scan"'
+        sh returnStatus: true, script: 'python3 upload-results.py --host 35.88.135.179:8080 --api_key 1e5d07659ca2a02cb2e43b8fd5fee6c859c0b328 --engagement_id 1 --product_id 1 --lead_id 1 --environment "Production" --result_file zap-report.xml --scanner "ZAP Scan"'
 
       }
     }
