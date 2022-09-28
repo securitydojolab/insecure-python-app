@@ -111,7 +111,7 @@ pipeline {
                     def delete_images = 'docker image prune -a --force'
                     def image_run = "docker run -d --name ${JOB_NAME} -p 8000:8000 ${image}"
                     println "${image_run}"
-                    sshagent(['tomcat']) {
+                    sshagent(['sshlogin']) {
                         // Change the IP address of the production server
                         sh returnStatus: true, script: "ssh -o StrictHostKeyChecking=no ubuntu@prod.securitydojo.co.in ${stop_container}"
                         sh returnStatus: true, script: "ssh -o StrictHostKeyChecking=no ubuntu@prod.securitydojo.co.in ${delete_contName}"
