@@ -201,14 +201,17 @@ pipeline {
         sh returnStatus: true, script: 'git clone https://github.com/securitydojolab/devsecops-infrastructure'
       }
     } 
+    }
 
+post {
+       // only triggered when blue or green sign
+       success {
+           slackSend (color: colorCode, message: summary)
+       }
+       // triggered when red sign
+       failure {
+           slackSend (color: colorCode, message: summary)
+       }
 
     }
-    post {
-        failure {
-                
-        slackSend failOnError:true message:"Build failed  - ${env.JOB_NAME} ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>)"
-    }
-}
-
 }
