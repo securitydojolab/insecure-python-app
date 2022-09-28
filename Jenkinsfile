@@ -12,7 +12,7 @@ pipeline {
                 // Clean workspace before build
                 cleanWs()
                 git branch: 'main',
-                    url: 'https://github.com/justmorpheus/devsecops-infrastructure'
+                    url: 'https://github.com/securitydojolab/insecure-python-app'
 
             }
         }
