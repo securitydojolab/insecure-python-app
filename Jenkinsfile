@@ -112,12 +112,12 @@ pipeline {
                     println "${image_run}"
                     sshagent(['tomcat']) {
                         // Change the IP address of the production server
-                        sh returnStatus: true, script: "ssh -o StrictHostKeyChecking=no ubuntu@devsecops.securitydojo.co.in ${stop_container}"
-                        sh returnStatus: true, script: "ssh -o StrictHostKeyChecking=no ubuntu@devsecops.securitydojo.co.in ${delete_contName}"
-                        sh returnStatus: true, script: "ssh -o StrictHostKeyChecking=no ubuntu@devsecops.securitydojo.co.in ${delete_images}"
+                        sh returnStatus: true, script: "ssh -o StrictHostKeyChecking=no ubuntu@prod.securitydojo.co.in ${stop_container}"
+                        sh returnStatus: true, script: "ssh -o StrictHostKeyChecking=no ubuntu@prod.securitydojo.co.in ${delete_contName}"
+                        sh returnStatus: true, script: "ssh -o StrictHostKeyChecking=no ubuntu@prod.securitydojo.co.in ${delete_images}"
 
                     // Change the IP address of the production server
-                        sh "ssh -o StrictHostKeyChecking=no ubuntu@devsecops.securitydojo.co.in ${image_run}"
+                        sh "ssh -o StrictHostKeyChecking=no ubuntu@prod.securitydojo.co.in ${image_run}"
                         archiveArtifacts artifacts: '**/*'
                     }
                 }
@@ -130,7 +130,7 @@ pipeline {
 
         // Change the IP address of the production server
         sh returnStatus: true, script: 'rm report/nikto-report.xml'
-        sh returnStatus: true, script: 'docker run --rm -u $(id -u):$(id -g) -v $(pwd):/tmp justmorpheu5/nikto -h http://devsecops.securitydojo.co.in:8000/ -o /tmp/report/nikto-report.xml'
+        sh returnStatus: true, script: 'docker run --rm -u $(id -u):$(id -g) -v $(pwd):/tmp justmorpheu5/nikto -h http://devsecops.securitydojo.co.in -o /tmp/report/nikto-report.xml'
         sh returnStatus: true, script: 'docker rm -f $(docker ps -a |  grep nikto |awk \'{print $1}\')'
         sh returnStatus: true, script: 'docker rmi $(docker images | grep nikto | awk \'{print $3}\') --force'
         sh 'cat report/nikto-report.xml'
@@ -165,7 +165,7 @@ pipeline {
       steps {
 
         // Change the IP address of the production server
-        sh returnStatus: true, script: 'docker run --user 0 --rm -v $(pwd):/zap/wrk:rw owasp/zap2docker-stable:2.11.1 zap-baseline.py -t http://devsecops.securitydojo.co.in:8000/ -x zap-report.xml'
+        sh returnStatus: true, script: 'docker run --user 0 --rm -v $(pwd):/zap/wrk:rw owasp/zap2docker-stable:2.11.1 zap-baseline.py -t http://devsecops.securitydojo.co.in -x zap-report.xml'
         sh returnStatus: true, script: 'docker rm -f $(docker ps -a |  grep zap |awk \'{print $1}\')'
         sh returnStatus: true, script: 'docker rmi $(docker images | grep zap | awk \'{print $3}\') --force'
       }
