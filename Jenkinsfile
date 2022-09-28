@@ -87,7 +87,7 @@ pipeline {
            steps {
                 sh label: '', script: "docker run -d --name ${JOB_NAME} -p 8000:8000 ${image}"
                 sh returnStatus: true, script: 'docker rm -f $(docker ps -a |  grep vuln-python |awk \'{print $1}\')'
-                sh returnStatus: true, script: 'docker rmi $(docker images | grep buster | awk \'{print $3}\') --force'
+                sh returnStatus: true, script: 'docker rmi $(docker images | grep buster | awk \'{print $1}\'):$(docker images | grep buster | awk \'{print $2}\') --force'
           }
         }
         
