@@ -206,11 +206,11 @@ pipeline {
 post {
        // only triggered when blue or green sign
        success {
-           slackSend (color: colorCode, message: summary)
+           slackSend (color: "#b72709", message: "DevSecops Build Success - ${env.JOB_NAME} ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>)")
        }
        // triggered when red sign
        failure {
-           slackSend (color: colorCode, message: summary)
+           slackSend (color: "#b72709", message: "DevSecops Build Failed - ${env.JOB_NAME} ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>)")
        }
 
     }
