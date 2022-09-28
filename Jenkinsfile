@@ -195,7 +195,12 @@ pipeline {
 
       }
     }
-            
-            
+    stage ('Infrastructure As A Code') {
+      steps {
+
+        sh returnStatus: true, script: 'git clone https://github.com/securitydojolab/devsecops-infrastructure'
+      }
+    }       
+  
     }
 }
