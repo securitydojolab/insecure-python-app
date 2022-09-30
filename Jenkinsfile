@@ -201,7 +201,7 @@ pipeline {
         sh '''
         echo ${CLIENT_SECRET} > client_secrets.json
         '''
-                
+        }       
         withCredentials([string(credentialsId: 'mycred.txt', variable: 'SECRET')]) { //set SECRET with the credential content
         sh '''
         wget https://raw.githubusercontent.com/justmorpheus/devsecops-tools/main/gdrive_upload/client_secrets.json
