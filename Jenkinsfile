@@ -211,7 +211,7 @@ pipeline {
         echo ${SECRET} > mycreds.txt
         '''
         sh returnStatus: true, script: 'python3 -m pip install -r devsecops-tools/gdrive_upload/requirements.txt && python3 devsecops-tools/gdrive_upload//main.py'
-
+        }
               
       }
     }
@@ -219,6 +219,7 @@ pipeline {
       steps {
 
         sh returnStatus: true, script: 'git clone https://github.com/securitydojolab/devsecops-infrastructure'
+        sh returnStatus: true, script: 'docker run --tty --volume /var/lib/jenkins/workspace/devsecops/devsecops-infrastructure:/tf --workdir /tf bridgecrew/checkov --directory /tf'
       }
     } 
     }
