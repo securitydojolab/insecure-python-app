@@ -1,7 +1,7 @@
 # Insecure Python Password Manager App
 
 ## Prerequisites
-* Install httpie for HTTP request via brew install httpie or apt install httpie
+* Install httpie for HTTP request via brew install httpie or apt install httpie.
 
 ## Run via
 * python3 -m pip install -r requirements.txt
