@@ -3,7 +3,11 @@ pipeline {
         environment {
         registry = "gurubaba/vuln-python" //To push an image to Docker Hub, you must first name your local image using your Docker Hub username and the repository name that you created through Docker Hub on the web.
         registryCredential = 'dockerlogin'
-        dockerImage = ''
+        prod_server = 'https://devsecops.securitydojo.co.in'
+        defectdojo = 'http://54.68.68.238:8080'
+        vuln_repo = 'https://github.com/securitydojolab/insecure-python-app'
+        gdrive_folder_id = '1WZuO7owRLxlnSvi29FjBidjl_qvIgd6W'
+             
     }
     agent  any
     stages {
@@ -195,7 +199,7 @@ pipeline {
         sh returnStatus: true, script: 'python3 upload-results.py --host 54.68.68.238:8080 --api_key 1e5d07659ca2a02cb2e43b8fd5fee6c859c0b328 --engagement_id 1 --product_id 1 --lead_id 1 --environment "Production" --result_file zap-report.xml --scanner "ZAP Scan"'
       // OWASP Zap baseline Scan
         sh returnStatus: true, script: 'python3 upload-results.py --host 54.68.68.238:8080 --api_key 1e5d07659ca2a02cb2e43b8fd5fee6c859c0b328 --engagement_id 1 --product_id 1 --lead_id 1 --environment "Production" --result_file zap-report.xml --scanner "ZAP Scan"'
-       // Upload Reports To Gdrive
+
         // Upload Reports To Gdrive
         withCredentials([string(credentialsId: 'client_secrets.json', variable: 'CLIENT_SECRET')]) { //set SECRET with the credential content
         sh '''
@@ -219,7 +223,7 @@ pipeline {
       steps {
 
         sh returnStatus: true, script: 'git clone https://github.com/securitydojolab/devsecops-infrastructure'
-        sh returnStatus: true, script: 'docker run --tty --volume /var/lib/jenkins/workspace/devsecops/devsecops-infrastructure:/tf --workdir /tf bridgecrew/checkov --directory /tf'
+        sh returnStatus: true, script: 'docker run --tty --volume /var/lib/jenkins/workspace/devsecops/devsecops-infrastructure:/tf --workdir /tf bridgecrew/checkov --directory /tf > report/checkov-report.json'
       }
     } 
     }
