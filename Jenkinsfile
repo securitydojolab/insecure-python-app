@@ -5,7 +5,9 @@ pipeline {
         registryCredential = 'dockerlogin'
         prod_server = 'prod.securitydojo.co.in'
         prodlb_server = 'https://devsecops.securitydojo.co.in'
-        defectdojo = 'http://54.68.68.238:8080'
+        defectdojo_server = 'http://54.68.68.238:8080'
+        defectdojo_apikey = '1e5d07659ca2a02cb2e43b8fd5fee6c859c0b328'
+        defectdojo_engagement_id = '1'
         vuln_repo = 'https://github.com/securitydojolab/insecure-python-app'
         gdrive_folder_id = '1WZuO7owRLxlnSvi29FjBidjl_qvIgd6W'
              
@@ -17,7 +19,7 @@ pipeline {
                 // Clean workspace before build
                 cleanWs()
                 git branch: 'main',
-                    url: 'https://github.com/securitydojolab/insecure-python-app'
+                    url: '$vuln_repo'
 
             }
         }
@@ -36,7 +38,7 @@ pipeline {
       steps {
 
         sh returnStatus: true, script: 'rm report/trufflehog.json'
-        sh returnStatus: true, script: 'docker run justmorpheu5/trufflehog https://github.com/securitydojolab/insecure-python-app --json > report/trufflehog.json'
+        sh returnStatus: true, script: 'docker run justmorpheu5/trufflehog $vuln_repo --json > report/trufflehog.json'
         sh returnStatus: true, script: 'docker rm -f $(docker ps -a |  grep trufflehog |awk \'{print $1}\')'
         sh returnStatus: true, script: 'docker rmi $(docker images | grep trufflehog | awk \'{print $3}\') --force'
         sh 'cat report/trufflehog.json'
@@ -46,6 +48,9 @@ pipeline {
    stage ('SCA Frontend Scan') {
       steps {
         sh returnStatus: true, script: 'rm -f odc-reports/dependency-check-*'
+              
+        //Fix for known error: https://github.com/jeremylong/DependencyCheck/issues/4604
+              
         sh returnStatus: true, script: 'rm /usr/share/dependency-check/data/odc.update.lock'
         sh 'wget "https://raw.githubusercontent.com/justmorpheus/devsecops-tools/main/owasp-dependency-check.sh" '
         sh 'chmod +x owasp-dependency-check.sh'
@@ -184,22 +189,22 @@ pipeline {
               
         sh returnStatus: true, script: 'chmod +x upload-results.py'
         //Bandit Scan Report
-        sh returnStatus: true, script: 'python3 upload-results.py --host 54.68.68.238:8080 --api_key 1e5d07659ca2a02cb2e43b8fd5fee6c859c0b328 --engagement_id 1 --product_id 1 --lead_id 1 --environment "Production" --result_file report/bandit-report.json --scanner "Bandit Scan"'
+        sh returnStatus: true, script: 'python3 upload-results.py --host 54.68.68.238:8080 --host $defectdojo_server --api_key $defectdojo_api_key --engagement_id $defectdojo_engagement_id --product_id 1 --lead_id 1 --environment "Production" --result_file report/bandit-report.json --scanner "Bandit Scan"'
         //Trufflehog Scan Report
-        sh returnStatus: true, script: 'python3 upload-results.py --host 54.68.68.238:8080 --api_key 1e5d07659ca2a02cb2e43b8fd5fee6c859c0b328 --engagement_id 1 --product_id 1 --lead_id 1 --environment "Production" --result_file report/trufflehog.json --scanner "Trufflehog Scan"'
+        sh returnStatus: true, script: 'python3 upload-results.py --host 54.68.68.238:8080 --host $defectdojo_server --api_key $defectdojo_api_key --engagement_id $defectdojo_engagement_id --product_id 1 --lead_id 1 --environment "Production" --result_file report/trufflehog.json --scanner "Trufflehog Scan"'
         //Safety not supported By DefectDojo
         //SSLyze Scan Report
-        sh returnStatus: true, script: 'python3 upload-results.py --host 54.68.68.238:8080 --api_key 1e5d07659ca2a02cb2e43b8fd5fee6c859c0b328 --engagement_id 1 --product_id 1 --lead_id 1 --environment "Production" --result_file report/sslyze-report.json --scanner "Sslyze Scan"'
+        sh returnStatus: true, script: 'python3 upload-results.py --host 54.68.68.238:8080 --host $defectdojo_server --api_key $defectdojo_api_key --engagement_id $defectdojo_engagement_id --product_id 1 --lead_id 1 --environment "Production" --result_file report/sslyze-report.json --scanner "Sslyze Scan"'
         //Nikto Scan Report
-        sh returnStatus: true, script: 'python3 upload-results.py --host 54.68.68.238:8080 --api_key 1e5d07659ca2a02cb2e43b8fd5fee6c859c0b328 --engagement_id 1 --product_id 1 --lead_id 1 --environment "Production" --result_file report/nikto-report.xml --scanner "Nikto Scan"'
+        sh returnStatus: true, script: 'python3 upload-results.py --host 54.68.68.238:8080 --host $defectdojo_server --api_key $defectdojo_api_key --engagement_id $defectdojo_engagement_id --product_id 1 --lead_id 1 --environment "Production" --result_file report/nikto-report.xml --scanner "Nikto Scan"'
         //Nmap Scan Report
-        sh returnStatus: true, script: 'python3 upload-results.py --host 54.68.68.238:8080 --api_key 1e5d07659ca2a02cb2e43b8fd5fee6c859c0b328 --engagement_id 1 --product_id 1 --lead_id 1 --environment "Production" --result_file report/nmap-report.xml --scanner "Nmap Scan"'
+        sh returnStatus: true, script: 'python3 upload-results.py --host 54.68.68.238:8080 --host $defectdojo_server --api_key $defectdojo_api_key --engagement_id $defectdojo_engagement_id --product_id 1 --lead_id 1 --environment "Production" --result_file report/nmap-report.xml --scanner "Nmap Scan"'
         //Dependency Check Scan Report
-        sh returnStatus: true, script: 'python3 upload-results.py --host 54.68.68.238:8080 --api_key 1e5d07659ca2a02cb2e43b8fd5fee6c859c0b328 --engagement_id 1 --product_id 1 --lead_id 1 --environment "Production" --result_file odc-reports/dependency-check-report.xml --scanner "Dependency Check Scan"'
+        sh returnStatus: true, script: 'python3 upload-results.py --host 54.68.68.238:8080 --host $defectdojo_server --api_key $defectdojo_api_key --engagement_id $defectdojo_engagement_id --product_id 1 --lead_id 1 --environment "Production" --result_file odc-reports/dependency-check-report.xml --scanner "Dependency Check Scan"'
         // OWASP Zap baseline Scan
-        sh returnStatus: true, script: 'python3 upload-results.py --host 54.68.68.238:8080 --api_key 1e5d07659ca2a02cb2e43b8fd5fee6c859c0b328 --engagement_id 1 --product_id 1 --lead_id 1 --environment "Production" --result_file zap-report.xml --scanner "ZAP Scan"'
+        sh returnStatus: true, script: 'python3 upload-results.py --host $defectdojo_server --api_key $defectdojo_api_key --engagement_id $defectdojo_engagement_id --product_id 1 --lead_id 1 --environment "Production" --result_file zap-report.xml --scanner "ZAP Scan"'
       // OWASP Zap baseline Scan
-        sh returnStatus: true, script: 'python3 upload-results.py --host 54.68.68.238:8080 --api_key 1e5d07659ca2a02cb2e43b8fd5fee6c859c0b328 --engagement_id 1 --product_id 1 --lead_id 1 --environment "Production" --result_file zap-report.xml --scanner "ZAP Scan"'
+        sh returnStatus: true, script: 'python3 upload-results.py --host $defectdojo_server --api_key $defectdojo_api_key --engagement_id $defectdojo_engagement_id --product_id 1 --lead_id 1 --environment "Production" --result_file zap-report.xml --scanner "ZAP Scan"'
 
         // Upload Reports To Gdrive
         withCredentials([string(credentialsId: 'client_secrets.json', variable: 'CLIENT_SECRET')]) { //set SECRET with the credential content
@@ -221,8 +226,8 @@ pipeline {
       }
     }
     stage ('Infrastructure As A Code') {
-      steps {
-
+            steps {
+         //Scan via Checkov
         sh returnStatus: true, script: 'git clone https://github.com/securitydojolab/devsecops-infrastructure'
         sh returnStatus: true, script: 'docker run --tty --volume `pwd`/devsecops-infrastructure:/tf --workdir /tf bridgecrew/checkov --directory /tf > report/checkov-report.json'
       }
