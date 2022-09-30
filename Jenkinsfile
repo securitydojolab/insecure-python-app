@@ -31,7 +31,7 @@ pipeline {
       steps {
 
         sh returnStatus: true, script: 'rm report/trufflehog.json'
-        sh returnStatus: true, script: 'docker run justmorpheu5/trufflehog https://github.com/justmorpheus/insecure-python-app --json > report/trufflehog.json'
+        sh returnStatus: true, script: 'docker run justmorpheu5/trufflehog https://github.com/securitydojolab/insecure-python-app --json > report/trufflehog.json'
         sh returnStatus: true, script: 'docker rm -f $(docker ps -a |  grep trufflehog |awk \'{print $1}\')'
         sh returnStatus: true, script: 'docker rmi $(docker images | grep trufflehog | awk \'{print $3}\') --force'
         sh 'cat report/trufflehog.json'
@@ -176,23 +176,43 @@ pipeline {
       steps {
 
         sh returnStatus: true, script: 'wget https://raw.githubusercontent.com/justmorpheus/devsecops-tools/main/upload-results.py'
+              
         sh returnStatus: true, script: 'chmod +x upload-results.py'
         //Bandit Scan Report
-        sh returnStatus: true, script: 'python3 upload-results.py --host 35.88.135.179:8080 --api_key 1e5d07659ca2a02cb2e43b8fd5fee6c859c0b328 --engagement_id 1 --product_id 1 --lead_id 1 --environment "Production" --result_file report/bandit-report.json --scanner "Bandit Scan"'
+        sh returnStatus: true, script: 'python3 upload-results.py --host 54.68.68.238:8080 --api_key 1e5d07659ca2a02cb2e43b8fd5fee6c859c0b328 --engagement_id 1 --product_id 1 --lead_id 1 --environment "Production" --result_file report/bandit-report.json --scanner "Bandit Scan"'
         //Trufflehog Scan Report
-        sh returnStatus: true, script: 'python3 upload-results.py --host 35.88.135.179:8080 --api_key 1e5d07659ca2a02cb2e43b8fd5fee6c859c0b328 --engagement_id 1 --product_id 1 --lead_id 1 --environment "Production" --result_file report/trufflehog.json --scanner "Trufflehog Scan"'
+        sh returnStatus: true, script: 'python3 upload-results.py --host 54.68.68.238:8080 --api_key 1e5d07659ca2a02cb2e43b8fd5fee6c859c0b328 --engagement_id 1 --product_id 1 --lead_id 1 --environment "Production" --result_file report/trufflehog.json --scanner "Trufflehog Scan"'
         //Safety not supported By DefectDojo
         //SSLyze Scan Report
-        sh returnStatus: true, script: 'python3 upload-results.py --host 35.88.135.179:8080 --api_key 1e5d07659ca2a02cb2e43b8fd5fee6c859c0b328 --engagement_id 1 --product_id 1 --lead_id 1 --environment "Production" --result_file report/sslyze-report.json --scanner "Sslyze Scan"'
+        sh returnStatus: true, script: 'python3 upload-results.py --host 54.68.68.238:8080 --api_key 1e5d07659ca2a02cb2e43b8fd5fee6c859c0b328 --engagement_id 1 --product_id 1 --lead_id 1 --environment "Production" --result_file report/sslyze-report.json --scanner "Sslyze Scan"'
         //Nikto Scan Report
-        sh returnStatus: true, script: 'python3 upload-results.py --host 35.88.135.179:8080 --api_key 1e5d07659ca2a02cb2e43b8fd5fee6c859c0b328 --engagement_id 1 --product_id 1 --lead_id 1 --environment "Production" --result_file report/nikto-report.xml --scanner "Nikto Scan"'
+        sh returnStatus: true, script: 'python3 upload-results.py --host 54.68.68.238:8080 --api_key 1e5d07659ca2a02cb2e43b8fd5fee6c859c0b328 --engagement_id 1 --product_id 1 --lead_id 1 --environment "Production" --result_file report/nikto-report.xml --scanner "Nikto Scan"'
         //Nmap Scan Report
-        sh returnStatus: true, script: 'python3 upload-results.py --host 35.88.135.179:8080 --api_key 1e5d07659ca2a02cb2e43b8fd5fee6c859c0b328 --engagement_id 1 --product_id 1 --lead_id 1 --environment "Production" --result_file report/nmap-report.xml --scanner "Nmap Scan"'
+        sh returnStatus: true, script: 'python3 upload-results.py --host 54.68.68.238:8080 --api_key 1e5d07659ca2a02cb2e43b8fd5fee6c859c0b328 --engagement_id 1 --product_id 1 --lead_id 1 --environment "Production" --result_file report/nmap-report.xml --scanner "Nmap Scan"'
         //Dependency Check Scan Report
-        sh returnStatus: true, script: 'python3 upload-results.py --host 35.88.135.179:8080 --api_key 1e5d07659ca2a02cb2e43b8fd5fee6c859c0b328 --engagement_id 1 --product_id 1 --lead_id 1 --environment "Production" --result_file odc-reports/dependency-check-report.xml --scanner "Dependency Check Scan"'
+        sh returnStatus: true, script: 'python3 upload-results.py --host 54.68.68.238:8080 --api_key 1e5d07659ca2a02cb2e43b8fd5fee6c859c0b328 --engagement_id 1 --product_id 1 --lead_id 1 --environment "Production" --result_file odc-reports/dependency-check-report.xml --scanner "Dependency Check Scan"'
         // OWASP Zap baseline Scan
-        sh returnStatus: true, script: 'python3 upload-results.py --host 35.88.135.179:8080 --api_key 1e5d07659ca2a02cb2e43b8fd5fee6c859c0b328 --engagement_id 1 --product_id 1 --lead_id 1 --environment "Production" --result_file zap-report.xml --scanner "ZAP Scan"'
+        sh returnStatus: true, script: 'python3 upload-results.py --host 54.68.68.238:8080 --api_key 1e5d07659ca2a02cb2e43b8fd5fee6c859c0b328 --engagement_id 1 --product_id 1 --lead_id 1 --environment "Production" --result_file zap-report.xml --scanner "ZAP Scan"'
+      // OWASP Zap baseline Scan
+        sh returnStatus: true, script: 'python3 upload-results.py --host 54.68.68.238:8080 --api_key 1e5d07659ca2a02cb2e43b8fd5fee6c859c0b328 --engagement_id 1 --product_id 1 --lead_id 1 --environment "Production" --result_file zap-report.xml --scanner "ZAP Scan"'
+       // Upload Reports To Gdrive
+        // Upload Reports To Gdrive
+        withCredentials([string(credentialsId: 'client_secrets.json', variable: 'CLIENT_SECRET')]) { //set SECRET with the credential content
+        sh '''
+        echo ${CLIENT_SECRET} > client_secrets.json
+        '''
+                
+        withCredentials([string(credentialsId: 'mycred.txt', variable: 'SECRET')]) { //set SECRET with the credential content
+        sh '''
+        wget https://raw.githubusercontent.com/justmorpheus/devsecops-tools/main/gdrive_upload/client_secrets.json
+        '''
+        sh returnStatus: true, script: 'git clone https://github.com/justmorpheus/devsecops-tools.git'
+        sh'''
+        echo ${SECRET} > mycreds.txt
+        '''
+        sh returnStatus: true, script: 'python3 -m pip install -r devsecops-tools/gdrive_upload/requirements.txt && python3 devsecops-tools/gdrive_upload//main.py'
 
+              
       }
     }
     stage ('Infrastructure As A Code') {
