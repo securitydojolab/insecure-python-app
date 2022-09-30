@@ -19,7 +19,7 @@ pipeline {
                 // Clean workspace before build
                 cleanWs()
                 git branch: 'main',
-                    url: '$vuln_repo'
+                    url: 'https://github.com/securitydojolab/insecure-python-app.git'
 
             }
         }
