@@ -224,7 +224,7 @@ pipeline {
       steps {
 
         sh returnStatus: true, script: 'git clone https://github.com/securitydojolab/devsecops-infrastructure'
-        sh returnStatus: true, script: 'docker run --tty --volume /var/lib/jenkins/workspace/devsecops/devsecops-infrastructure:/tf --workdir /tf bridgecrew/checkov --directory /tf > report/checkov-report.json'
+        sh returnStatus: true, script: 'docker run --tty --volume `pwd`/devsecops-infrastructure:/tf --workdir /tf bridgecrew/checkov --directory /tf > report/checkov-report.json'
       }
     } 
     }
