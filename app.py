@@ -48,6 +48,57 @@ def encrypt_value(value):
 
 def decrypt_value(value):
     value = b64decode(value.encode('utf-8'))
+from flask import Flask, request, jsonify
+from base64 import b64encode, b64decode
+import jwt
+import os
+from tinydb import TinyDB, Query
+from Crypto.Cipher import AES
+from Crypto.Util.Padding import pad, unpad
+import logging
+import logging.config
+import subprocess
+import json
+import urllib.request
+
+log_level = {
+  'CRITICAL': 50,
+  'ERROR': 40,
+  'WARN': 30,
+  'INFO': 20,
+  'DEBUG': 10
+}
+
+logger = logging.getLogger('app')
+AWS_Key = "AKIAILE3JG6KMS3HZGCA"
+Secret_Key = "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"
+app = Flask(__name__)
+os.system("echo '{\"_default\": {}}' > mydb.json")
+my_db = TinyDB('mydb.json')
+table = my_db.table('user_password')
+#jwtpass = 'myr@nd0mp@ssw0rd'
+enc_key = "abcdefghijklmnop".encode('utf-8')
+
+
+@app.before_first_request
+def before_first_request():
+    # db.truncate()
+    print("All data cleaned")
+
+
+def get_cipher():
+    return AES.new(enc_key, AES.MODE_ECB)
+
+
+
+def encrypt_value(value):
+    cipher = get_cipher()
+    cipher_val = cipher.encrypt(pad(value.encode('utf-8'), 16))
+    base = b64encode(cipher_val).decode()
+    return base
+
+def decrypt_value(value):
+    value = b64decode(value.encode('utf-8'))
     cipher = get_cipher()
     plain_text = unpad(cipher.decrypt(value), 16)
     return plain_text.decode()
@@ -95,7 +146,7 @@ def web():
     try:
         site=request.args.get('url')
         response = urllib.request.urlopen(site)
-        output=json.dumps(response.read().decode('utf-8'))
+        output=json.dumps(response.read().decode('utf-8', errors='ignore'))
         return jsonify({"output": output}), 200
     except:
         return ("Error Ocurred")
@@ -113,7 +164,8 @@ def command():
     except:
         return ("Error Ocurred")
       
-      
+
+
 if __name__ == "__main__":
     logger.warning('In Main function')
     logging.basicConfig(
