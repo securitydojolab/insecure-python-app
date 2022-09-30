@@ -3,7 +3,8 @@ pipeline {
         environment {
         registry = "gurubaba/vuln-python" //To push an image to Docker Hub, you must first name your local image using your Docker Hub username and the repository name that you created through Docker Hub on the web.
         registryCredential = 'dockerlogin'
-        prod_server = 'https://devsecops.securitydojo.co.in'
+        prod_server = 'prod.securitydojo.co.in'
+        prodlb_server = 'https://devsecops.securitydojo.co.in'
         defectdojo = 'http://54.68.68.238:8080'
         vuln_repo = 'https://github.com/securitydojolab/insecure-python-app'
         gdrive_folder_id = '1WZuO7owRLxlnSvi29FjBidjl_qvIgd6W'
@@ -117,12 +118,12 @@ pipeline {
                     println "${image_run}"
                     sshagent(['sshlogin']) {
                         // Change the IP address of the production server
-                        sh returnStatus: true, script: "ssh -o StrictHostKeyChecking=no ubuntu@prod.securitydojo.co.in ${stop_container}"
-                        sh returnStatus: true, script: "ssh -o StrictHostKeyChecking=no ubuntu@prod.securitydojo.co.in ${delete_contName}"
-                        sh returnStatus: true, script: "ssh -o StrictHostKeyChecking=no ubuntu@prod.securitydojo.co.in ${delete_images}"
+                        sh returnStatus: true, script: "ssh -o StrictHostKeyChecking=no ubuntu@$prod_server ${stop_container}"
+                        sh returnStatus: true, script: "ssh -o StrictHostKeyChecking=no ubuntu@$prod_server ${delete_contName}"
+                        sh returnStatus: true, script: "ssh -o StrictHostKeyChecking=no ubuntu@$prod_server ${delete_images}"
 
                     // Change the IP address of the production server
-                        sh "ssh -o StrictHostKeyChecking=no ubuntu@prod.securitydojo.co.in ${image_run}"
+                        sh "ssh -o StrictHostKeyChecking=no ubuntu@$prod_server ${image_run}"
                         archiveArtifacts artifacts: '**/*'
                     }
                 }
@@ -135,7 +136,7 @@ pipeline {
 
         // Change the IP address of the production server
         sh returnStatus: true, script: 'rm report/nikto-report.xml'
-        sh returnStatus: true, script: 'docker run --rm -u $(id -u):$(id -g) -v $(pwd):/tmp justmorpheu5/nikto -h http://devsecops.securitydojo.co.in -o /tmp/report/nikto-report.xml'
+        sh returnStatus: true, script: 'docker run --rm -u $(id -u):$(id -g) -v $(pwd):/tmp justmorpheu5/nikto -h $prodlb_server -o /tmp/report/nikto-report.xml'
         sh returnStatus: true, script: 'docker rm -f $(docker ps -a |  grep nikto |awk \'{print $1}\')'
         sh returnStatus: true, script: 'docker rmi $(docker images | grep nikto | awk \'{print $3}\') --force'
         sh 'cat report/nikto-report.xml'
@@ -147,7 +148,7 @@ pipeline {
 
         // Change the google.com to production domain
         sh returnStatus: true, script: 'rm report/sslyze-report.json'
-        sh returnStatus: true, script: 'docker run --rm -u $(id -u):$(id -g) -v $(pwd):/tmp justmorpheu5/sslyze devsecops.securitydojo.co.in --json_out /tmp/report/sslyze-report.json'
+        sh returnStatus: true, script: 'docker run --rm -u $(id -u):$(id -g) -v $(pwd):/tmp justmorpheu5/sslyze $prodlb_server --json_out /tmp/report/sslyze-report.json'
         sh returnStatus: true, script: 'docker rm -f $(docker ps -a |  grep sslyze |awk \'{print $1}\')'
         sh returnStatus: true, script: 'docker rmi $(docker images | grep sslyze | awk \'{print $3}\') --force'
         sh 'cat report/sslyze-report.json'
@@ -159,7 +160,7 @@ pipeline {
 
         // Change the IP address of the production server
         sh returnStatus: true, script: 'rm report/nmap-report.xml'
-        sh returnStatus: true, script: 'docker run --rm -u $(id -u):$(id -g) -v $(pwd):/tmp justmorpheu5/nmap devsecops.securitydojo.co.in -oX /tmp/report/nmap-report.xml'
+        sh returnStatus: true, script: 'docker run --rm -u $(id -u):$(id -g) -v $(pwd):/tmp justmorpheu5/nmap $prodlb_server -oX /tmp/report/nmap-report.xml'
         sh returnStatus: true, script: 'docker rm -f $(docker ps -a |  grep nmap |awk \'{print $1}\')'
         sh returnStatus: true, script: 'docker rmi $(docker images | grep nmap | awk \'{print $3}\') --force'
         sh 'cat report/nmap-report.xml'
@@ -170,7 +171,7 @@ pipeline {
       steps {
 
         // Change the IP address of the production server
-        sh returnStatus: true, script: 'docker run --user 0 --rm -v $(pwd):/zap/wrk:rw owasp/zap2docker-stable:2.11.1 zap-baseline.py -t http://devsecops.securitydojo.co.in -x zap-report.xml'
+        sh returnStatus: true, script: 'docker run --user 0 --rm -v $(pwd):/zap/wrk:rw owasp/zap2docker-stable:2.11.1 zap-baseline.py -t $prodlb_server -x zap-report.xml'
         sh returnStatus: true, script: 'docker rm -f $(docker ps -a |  grep zap |awk \'{print $1}\')'
         sh returnStatus: true, script: 'docker rmi $(docker images | grep zap | awk \'{print $3}\') --force'
       }
