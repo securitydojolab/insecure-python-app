@@ -8,7 +8,7 @@ pipeline {
         defectdojo_server = 'http://54.68.68.238:8080'
         defectdojo_apikey = '1e5d07659ca2a02cb2e43b8fd5fee6c859c0b328'
         defectdojo_engagement_id = '1'
-        vuln_repo = 'https://github.com/securitydojolab/insecure-python-app'
+        vuln_repo = 'https://github.com/securitydojolab/insecure-python-app.git'
         gdrive_folder_id = '1WZuO7owRLxlnSvi29FjBidjl_qvIgd6W'
              
     }
